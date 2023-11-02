@@ -140,37 +140,37 @@ public class data_siswa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bSPPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSPPActionPerformed
-        new data_spp().setVisible(true);
+        new admin.CRUD.data_spp().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bSPPActionPerformed
 
     private void bSiswaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSiswaActionPerformed
-        new data_siswa().setVisible(true);
+        new admin.CRUD.data_siswa().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bSiswaActionPerformed
 
     private void bKelasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bKelasActionPerformed
-        new data_kelas().setVisible(true);
+        new admin.CRUD.data_kelas().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bKelasActionPerformed
 
     private void bAkunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAkunActionPerformed
-        new data_akunEdit().setVisible(true);
+        new admin.CRUD.data_akun().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bAkunActionPerformed
 
     private void bPembayaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPembayaranActionPerformed
-        new data_pembayaran().setVisible(true);
+        new admin.CRUD.data_pembayaran().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bPembayaranActionPerformed
 
     private void bCRUDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCRUDActionPerformed
-        new dashboardCRUD().setVisible(true);
+        new admin.dashboardCRUD().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bCRUDActionPerformed
 
     private void bDashboard1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDashboard1ActionPerformed
-        new dashboard().setVisible(true);
+        new admin.dashboard().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bDashboard1ActionPerformed
 

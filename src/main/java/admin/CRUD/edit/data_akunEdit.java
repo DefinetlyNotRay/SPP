@@ -30,21 +30,33 @@ public class data_akunEdit extends javax.swing.JFrame {
     Connection c;
     Object[] selectedRowData;
 
-    public data_akunEdit() {
+     // Add these fields
+    private int id_akun;
+    private String username;
+    private String password;
+    private String nama;
+    private String level;
+    
+    // Constructor
+    public data_akunEdit(int id_akun, String username, String password, String nama, String level) {
         initComponents();
         c = connection.getConnection();
-        this.selectedRowData = selectedRowData;
-
-        try {
-            stmnt = c.createStatement();
-        } catch (SQLException ex) {
-            Logger.getLogger(data_akunEdit.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        // Set the fields
+        this.id_akun = id_akun;
+        this.username = username;
+        this.password = password;
+        this.nama = nama;
+        this.level = level;
+        
+        // Set the text fields
+        usernamee.setText(username);
+        passwordd.setText(password);
+        namaa.setText(nama);
+        jlevelCombo.setSelectedItem(level);
     }
 
-    public data_akunEdit(Object[] selectedRowData) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -63,11 +75,11 @@ public class data_akunEdit extends javax.swing.JFrame {
         bDashboard1 = new javax.swing.JButton();
         bLogout = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        username = new javax.swing.JTextField();
+        usernamee = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        password = new javax.swing.JTextField();
+        passwordd = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        nama = new javax.swing.JTextField();
+        namaa = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jlevelCombo = new javax.swing.JComboBox<>();
         bSubmit = new javax.swing.JButton();
@@ -182,14 +194,14 @@ public class data_akunEdit extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(usernamee, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(passwordd, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(49, 49, 49)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(nama, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                                    .addComponent(namaa, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                                     .addComponent(jlevelCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -212,17 +224,17 @@ public class data_akunEdit extends javax.swing.JFrame {
                         .addGap(78, 78, 78)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(usernamee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(namaa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(passwordd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -279,20 +291,23 @@ public class data_akunEdit extends javax.swing.JFrame {
     }//GEN-LAST:event_jlevelComboActionPerformed
 
     private void bSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubmitActionPerformed
-        String usernameinput = username.getText();
-        String passwordinput = password.getText();
-        String nameinput = nama.getText();
+        String usernameinput = usernamee.getText();
+        String passwordinput = passwordd.getText();
+        String nameinput = namaa.getText();
         String levelComboBox = jlevelCombo.getSelectedItem().toString();
         
         if (usernameinput.isEmpty() || passwordinput.isEmpty() || nameinput.isEmpty()) {
         JOptionPane.showMessageDialog(null, "Please fill in all fields.");
         return; // Exit the method without executing the SQL statement
         }
-        sql = "UPDATE `data_akun` SET username='" + usernameinput + "', password='" + passwordinput + "', nama='" + nameinput + "', level='" + levelComboBox + "'";
+        sql = "UPDATE `data_akun` SET username='" + usernameinput + "', password='" + passwordinput + "', nama='" + nameinput + "', level='" + levelComboBox + "' WHERE id_akun ='"+ id_akun +"'";
 
        
         try{
+           stmnt = c.createStatement();
+
            stmnt.execute(sql);
+           
            JOptionPane.showMessageDialog(null, "Account created successfully.");
            new admin.CRUD.data_akun().setVisible(true);
             this.dispose();
@@ -341,7 +356,7 @@ public class data_akunEdit extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new data_akunEdit().setVisible(true);
+            new data_akunEdit(0, "", "", "", "").setVisible(true);
             }
         });
     }
@@ -361,8 +376,8 @@ public class data_akunEdit extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     public javax.swing.JComboBox<String> jlevelCombo;
-    public javax.swing.JTextField nama;
-    public javax.swing.JTextField password;
-    public javax.swing.JTextField username;
+    public javax.swing.JTextField namaa;
+    public javax.swing.JTextField passwordd;
+    public javax.swing.JTextField usernamee;
     // End of variables declaration//GEN-END:variables
 }

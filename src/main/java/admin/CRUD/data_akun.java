@@ -7,7 +7,9 @@ import admin.dashboardCRUD;
 import admin.dashboard;
 import connection.connection;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,7 +32,6 @@ public class data_akun extends javax.swing.JFrame {
         this.TampilData();
         
     }
-    admin.CRUD.edit.data_akunEdit showEdit = new admin.CRUD.edit.data_akunEdit();
 
      public void TampilData() {
             
@@ -189,6 +190,11 @@ public class data_akun extends javax.swing.JFrame {
         });
 
         deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -288,13 +294,13 @@ public class data_akun extends javax.swing.JFrame {
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bLogoutActionPerformed
-
+private String selectedId;
     private void tabelAkunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkunMouseClicked
         int selectedRowIndex = tabelAkun.getSelectedRow();
         
     if (selectedRowIndex != -1) {
         selectedRowData = new Object[]{
-            tabelAkun.getValueAt(selectedRowIndex, 0), // Assuming column 0 is id_akun
+           selectedId =  tabelAkun.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_akun
             tabelAkun.getValueAt(selectedRowIndex, 1), // Assuming column 1 is username
             tabelAkun.getValueAt(selectedRowIndex, 2), // Assuming column 2 is password
             tabelAkun.getValueAt(selectedRowIndex, 3), // Assuming column 3 is nama
@@ -309,15 +315,59 @@ public class data_akun extends javax.swing.JFrame {
     }//GEN-LAST:event_addDataActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-         if (selectedRowData != null) {
-        // Create an instance of EditDataAkunFrame
-        admin.CRUD.edit.data_akunEdit editFrame = new admin.CRUD.edit.data_akunEdit(selectedRowData);
-        editFrame.setVisible(true);
-    } else {
-        // Display a message to prompt the user to select a row
-        JOptionPane.showMessageDialog(this, "Please select a row to edit.", "No Row Selected", JOptionPane.WARNING_MESSAGE);
+   
+  if (selectedRowData != null) {
+        int id_akun = Integer.parseInt(selectedRowData[0].toString());
+        String username = selectedRowData[1].toString();
+        String password = selectedRowData[2].toString();
+        String nama = selectedRowData[3].toString();
+        String level = selectedRowData[4].toString();
+        
+        // Pass the data to data_akunEdit
+        admin.CRUD.edit.data_akunEdit editForm = new admin.CRUD.edit.data_akunEdit(id_akun, username, password, nama, level);
+        editForm.setVisible(true);
+        this.dispose();
     }
     }//GEN-LAST:event_editButtonActionPerformed
+    
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        Connection conn = connection.getConnection();
+        
+                int confirm = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin menghapus data tersebut?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (confirm == 0) {
+             try {
+                // Prepare a SQL delete statement to remove the selected ticket information
+                java.sql.PreparedStatement statement = conn.prepareStatement("delete from data_akun where id_akun ='" + selectedId + "'");
+                statement.executeUpdate(); // Execute the SQL delete statement
+                JOptionPane.showMessageDialog(null, "Data berhasil dihapus", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+                TampilData(); // Refresh the displayed data
+                
+               
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Data gagal di hapus" + e.getMessage(), "Pesan", JOptionPane.ERROR_MESSAGE);
+            }
+        }        
+        String countQuery = "SELECT COUNT(id_akun) FROM data_akun;";
+        
+    try {
+    Statement statement = conn.createStatement();
+
+    // Get the total count
+    ResultSet resultSet = statement.executeQuery(countQuery);
+    int totalRecords = 0;
+    if (resultSet.next()) {
+        totalRecords = resultSet.getInt(1);
+    }
+
+    // Reset the auto-increment value
+    if (totalRecords > 0) {
+        String resetAutoIncrementQuery = "ALTER TABLE data_akun AUTO_INCREMENT = " + (totalRecords + 1);
+        statement.executeUpdate(resetAutoIncrementQuery);
+    }
+} catch (SQLException e) {
+    e.printStackTrace();
+}
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * @param args the command line arguments

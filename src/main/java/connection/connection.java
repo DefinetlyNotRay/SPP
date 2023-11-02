@@ -8,7 +8,7 @@ public class connection {
 
     public static Connection getConnection() {
         Connection conn = null;
-        String url = "jdbc:mysql://localhost:3306/spp";
+        String url = "jdbc:mysql://localhost:33860/spp";
         String user = "root";
         String password = "";
 

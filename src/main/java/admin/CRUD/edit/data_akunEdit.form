@@ -49,15 +49,15 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel1" alignment="0" min="-2" pref="156" max="-2" attributes="0"/>
-                                  <Component id="username" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                  <Component id="usernamee" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
                                   <Component id="jLabel2" alignment="0" min="-2" pref="156" max="-2" attributes="0"/>
-                                  <Component id="password" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                  <Component id="passwordd" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="jLabel4" alignment="0" min="-2" pref="156" max="-2" attributes="0"/>
                                   <Component id="jLabel3" alignment="0" min="-2" pref="156" max="-2" attributes="0"/>
-                                  <Component id="nama" alignment="0" pref="179" max="32767" attributes="0"/>
+                                  <Component id="namaa" alignment="0" pref="179" max="32767" attributes="0"/>
                                   <Component id="jlevelCombo" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -88,12 +88,12 @@
                       <EmptySpace min="-2" pref="78" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="username" min="-2" max="-2" attributes="0"/>
+                      <Component id="usernamee" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="nama" min="-2" max="-2" attributes="0"/>
+                      <Component id="namaa" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -101,7 +101,7 @@
                   <Group type="102" attributes="0">
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="password" min="-2" max="-2" attributes="0"/>
+                      <Component id="passwordd" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
@@ -189,7 +189,7 @@
         <Property name="text" type="java.lang.String" value="Username"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="username">
+    <Component class="javax.swing.JTextField" name="usernamee">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
@@ -199,7 +199,7 @@
         <Property name="text" type="java.lang.String" value="Password"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="password">
+    <Component class="javax.swing.JTextField" name="passwordd">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
@@ -209,7 +209,7 @@
         <Property name="text" type="java.lang.String" value="Name"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="nama">
+    <Component class="javax.swing.JTextField" name="namaa">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
