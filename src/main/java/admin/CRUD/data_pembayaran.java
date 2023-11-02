@@ -5,6 +5,15 @@
 package admin.CRUD;
 import admin.dashboardCRUD;
 import admin.dashboard;
+import connection.connection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Eren
@@ -14,9 +23,77 @@ public class data_pembayaran extends javax.swing.JFrame {
     /**
      * Creates new form data_pembayaran
      */
+     Statement stmnt;
+      String sql;
+      String sql2;
+      String sql3;
+      ResultSet rs;
+      Connection c;
+          private DefaultTableModel TableModel;
+       private Object[] selectedRowData;
+      
     public data_pembayaran() {
         initComponents();
+        c = connection.getConnection();
+         try {
+              stmnt = c.createStatement(); // Initialize the statement object
+          } catch (SQLException ex) {
+              Logger.getLogger(admin.CRUD.create.data_akun.class.getName()).log(Level.SEVERE, null, ex);
+          }
+         this.TampilData();
+
     }
+  public void TampilData() {
+    int no = 1; // Counter variable
+    TableModel = new DefaultTableModel(); // Initialize table model
+    // Add columns to the table model
+    TableModel.addColumn("no");
+    TableModel.addColumn("Akun Petugas");
+    TableModel.addColumn("NISN");
+    TableModel.addColumn("Tanggal Bayar");
+    TableModel.addColumn("Bulan diBayar");
+    TableModel.addColumn("Tahun diBayar");
+    TableModel.addColumn("SPP");
+    TableModel.addColumn("Jumlah Bayar");
+
+    tabelAkun.setModel(TableModel); // Set the table model
+
+    try {
+        java.sql.Statement statement = c.createStatement();
+        sql = "SELECT dp.*, da.nama AS nama_akun, ds.nominal AS nominal_spp " + 
+              "FROM data_pembayaran dp " +
+              "JOIN data_akun da ON dp.id_akun_siswa = da.id_akun " +
+              "JOIN data_spp ds ON dp.id_spp = ds.id_spp"; 
+        java.sql.ResultSet res = statement.executeQuery(sql); // Execute query
+
+        while (res.next()) {
+             //inside your while loop, after fetching the values from the result set
+            int nominal = res.getInt("nominal_spp");
+            String tahun = res.getString("tahun_dibayar");
+
+            // Combine nominal and tahun into one string
+            String combinedValue = tahun  + " | " + nominal +"";
+
+            TableModel.addRow(new Object[]{
+                no++,
+                res.getString("username"),
+                res.getString("nisn"),
+                res.getString("tgl_bayar"),
+                res.getString("bulan_dibayar"),
+                res.getString("tahun_dibayar"),
+                combinedValue,
+                res.getInt("jumlah_bayar")
+            });
+        }
+        
+        // Close the result set
+        res.close();
+    } catch (SQLException e) {
+        System.out.println(e.getMessage()); // Print error message
+    }
+}
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,6 +104,8 @@ public class data_pembayaran extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelAkun = new javax.swing.JTable();
         bSPP = new javax.swing.JButton();
         bSiswa = new javax.swing.JButton();
         bKelas = new javax.swing.JButton();
@@ -35,6 +114,38 @@ public class data_pembayaran extends javax.swing.JFrame {
         bCRUD = new javax.swing.JButton();
         bDashboard1 = new javax.swing.JButton();
         bLogout = new javax.swing.JButton();
+        addData = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
+        deleteButton1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabelAkun1 = new javax.swing.JTable();
+
+        tabelAkun.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "No", "Akun Petugas", "NISN", "Tanggal Bayar", "Bulan Bayar", "Tahun Bayar", "SPP", "Jumlah Bayar"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, true, true, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabelAkun.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelAkunMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelAkun);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,6 +206,54 @@ public class data_pembayaran extends javax.swing.JFrame {
             }
         });
 
+        addData.setText("Add New Data");
+        addData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDataActionPerformed(evt);
+            }
+        });
+
+        editButton.setText("Edit");
+        editButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editButtonActionPerformed(evt);
+            }
+        });
+
+        deleteButton1.setText("Delete");
+        deleteButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButton1ActionPerformed(evt);
+            }
+        });
+
+        tabelAkun1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "No", "Username", "Password", "Nama", "Level"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabelAkun1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelAkun1MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tabelAkun1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -117,6 +276,21 @@ public class data_pembayaran extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(132, 132, 132)
+                .addComponent(deleteButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 860, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(75, 75, 75))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(75, 75, 75)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(editButton)
+                        .addComponent(addData))
+                    .addContainerGap(830, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,7 +305,18 @@ public class data_pembayaran extends javax.swing.JFrame {
                     .addComponent(bCRUD)
                     .addComponent(bAkun)
                     .addComponent(bPembayaran))
-                .addContainerGap(272, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteButton1)
+                .addGap(55, 55, 55))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(56, 56, 56)
+                    .addComponent(addData)
+                    .addGap(341, 341, 341)
+                    .addComponent(editButton)
+                    .addContainerGap(56, Short.MAX_VALUE)))
         );
 
         pack();
@@ -173,8 +358,96 @@ public class data_pembayaran extends javax.swing.JFrame {
     }//GEN-LAST:event_bDashboard1ActionPerformed
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
-        // TODO add your handling code here:
+        new login.login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bLogoutActionPerformed
+    private String selectedId;
+    private void tabelAkunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkunMouseClicked
+        int selectedRowIndex = tabelAkun.getSelectedRow();
+
+        if (selectedRowIndex != -1) {
+            selectedRowData = new Object[]{
+                selectedId =  tabelAkun.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_kelas
+                tabelAkun.getValueAt(selectedRowIndex, 1), // Assuming column 1 is nama_kelas
+                tabelAkun.getValueAt(selectedRowIndex, 2), // Assuming column 2 is kompetensi keahlian
+            };
+        }
+    }//GEN-LAST:event_tabelAkunMouseClicked
+
+    private void addDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDataActionPerformed
+        new admin.CRUD.create.data_kelas().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_addDataActionPerformed
+
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+
+        if (selectedRowData != null) {
+            int id_pembayaran = Integer.parseInt(selectedRowData[0].toString());
+            String id_akun = selectedRowData[1].toString();
+            String nisn = selectedRowData[2].toString();
+            String tgl_bayar = selectedRowData[3].toString();
+            String bulan_bayar = selectedRowData[4].toString();
+            String tahun_bayar = selectedRowData[5].toString();
+            String nominalTahun = selectedRowData[6].toString();
+            String jumlah_bayar = selectedRowData[7].toString();
+            // Pass the data to data_akunEdit
+            //admin.CRUD.edit.data_pembayaran editForm = new admin.CRUD.edit.data_pembayaran(id_pembayaran, id_akun, nisn,tgl_bayar,bulan_bayar,tahun_bayar,nominalTahun,jumlah_bayar);
+           // editForm.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_editButtonActionPerformed
+
+    private void tabelAkun1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkun1MouseClicked
+        int selectedRowIndex = tabelAkun.getSelectedRow();
+
+        if (selectedRowIndex != -1) {
+            selectedRowData = new Object[]{
+                selectedId =  tabelAkun.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_akun
+                tabelAkun.getValueAt(selectedRowIndex, 1), // Assuming column 1 is username
+                tabelAkun.getValueAt(selectedRowIndex, 2), // Assuming column 2 is password
+                tabelAkun.getValueAt(selectedRowIndex, 3), // Assuming column 3 is nama
+                tabelAkun.getValueAt(selectedRowIndex, 4)  // Assuming column 4 is level
+            };
+        }
+    }//GEN-LAST:event_tabelAkun1MouseClicked
+
+    private void deleteButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButton1ActionPerformed
+        Connection conn = connection.getConnection();
+
+        int confirm = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin menghapus data tersebut?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (confirm == 0) {
+            try {
+                // Prepare a SQL delete statement to remove the selected ticket information
+                java.sql.PreparedStatement statement = conn.prepareStatement("delete from data_pembayaran where id_pembayaran ='" + selectedId + "'");
+                statement.executeUpdate(); // Execute the SQL delete statement
+                JOptionPane.showMessageDialog(null, "Data berhasil dihapus", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+                TampilData(); // Refresh the displayed data
+
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Data gagal di hapus" + e.getMessage(), "Pesan", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        String countQuery = "SELECT COUNT(id_pembayaran) FROM data_pembayaran;";
+
+        try {
+            Statement statement = conn.createStatement();
+
+            // Get the total count
+            ResultSet resultSet = statement.executeQuery(countQuery);
+            int totalRecords = 0;
+            if (resultSet.next()) {
+                totalRecords = resultSet.getInt(1);
+            }
+
+            // Reset the auto-increment value
+            if (totalRecords > 0) {
+                String resetAutoIncrementQuery = "ALTER TABLE data_pembayaran AUTO_INCREMENT = " + (totalRecords + 1);
+                statement.executeUpdate(resetAutoIncrementQuery);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_deleteButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -212,6 +485,7 @@ public class data_pembayaran extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addData;
     private javax.swing.JButton bAkun;
     private javax.swing.JButton bCRUD;
     private javax.swing.JButton bDashboard1;
@@ -220,5 +494,11 @@ public class data_pembayaran extends javax.swing.JFrame {
     private javax.swing.JButton bPembayaran;
     private javax.swing.JButton bSPP;
     private javax.swing.JButton bSiswa;
+    private javax.swing.JButton deleteButton1;
+    private javax.swing.JButton editButton;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tabelAkun;
+    private javax.swing.JTable tabelAkun1;
     // End of variables declaration//GEN-END:variables
 }

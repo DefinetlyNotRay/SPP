@@ -292,7 +292,8 @@ public class data_akun extends javax.swing.JFrame {
     }//GEN-LAST:event_bDashboard1ActionPerformed
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
-        // TODO add your handling code here:
+        new login.login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bLogoutActionPerformed
 private String selectedId;
     private void tabelAkunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkunMouseClicked

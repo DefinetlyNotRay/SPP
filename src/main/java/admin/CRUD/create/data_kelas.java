@@ -6,17 +6,27 @@ package admin.CRUD.create;
 import admin.CRUD.*;
 import admin.dashboardCRUD;
 import admin.dashboard;
+import connection.connection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Eren
  */
 public class data_kelas extends javax.swing.JFrame {
-
+     Statement stmnt;
+      String sql;
+      ResultSet rs;
+      Connection c;
     /**
      * Creates new form data_kelas
      */
     public data_kelas() {
         initComponents();
+         c = connection.getConnection();
     }
 
     /**
@@ -36,6 +46,11 @@ public class data_kelas extends javax.swing.JFrame {
         bSPP = new javax.swing.JButton();
         bSiswa = new javax.swing.JButton();
         bLogout = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        eNamakelas = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        eKompetensi = new javax.swing.JTextField();
+        bSubmit = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -96,6 +111,17 @@ public class data_kelas extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Nama Kelas");
+
+        jLabel2.setText("Kompetensi Keahlian");
+
+        bSubmit.setText("Submit");
+        bSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSubmitActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -118,6 +144,19 @@ public class data_kelas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(312, 312, 312)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(bSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(eNamakelas, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(53, 53, 53)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(eKompetensi, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,7 +171,19 @@ public class data_kelas extends javax.swing.JFrame {
                     .addComponent(bCRUD)
                     .addComponent(bAkun)
                     .addComponent(bPembayaran))
-                .addContainerGap(331, Short.MAX_VALUE))
+                .addGap(87, 87, 87)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eNamakelas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eKompetensi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(bSubmit)
+                .addContainerGap(160, Short.MAX_VALUE))
         );
 
         pack();
@@ -176,6 +227,30 @@ public class data_kelas extends javax.swing.JFrame {
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bLogoutActionPerformed
+
+    private void bSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubmitActionPerformed
+        String kompetensi = eKompetensi.getText();
+        String nama_kelas = eNamakelas.getText();
+        
+          if (kompetensi.isEmpty() || nama_kelas.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+        return; // Exit the method without executing the SQL statement
+        }
+        
+         sql = "INSERT INTO `data_kelas` VALUES(NULL, '" + nama_kelas + "','" + kompetensi + "')";
+           try{
+            stmnt = c.createStatement();
+           stmnt.execute(sql);
+           JOptionPane.showMessageDialog(null, "Account created successfully.");
+           new admin.CRUD.data_kelas().setVisible(true);
+            this.dispose();
+
+        }catch(SQLException e){
+          e.printStackTrace();
+          JOptionPane.showMessageDialog(null, "Error creating account. Please try again.");
+
+       }
+    }//GEN-LAST:event_bSubmitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -222,5 +297,10 @@ public class data_kelas extends javax.swing.JFrame {
     private javax.swing.JButton bPembayaran;
     private javax.swing.JButton bSPP;
     private javax.swing.JButton bSiswa;
+    private javax.swing.JToggleButton bSubmit;
+    private javax.swing.JTextField eKompetensi;
+    private javax.swing.JTextField eNamakelas;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
