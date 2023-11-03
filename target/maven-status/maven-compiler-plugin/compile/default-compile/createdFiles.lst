@@ -3,7 +3,6 @@ admin\CRUD\data_akun$14.class
 admin\CRUD\data_kelas$14.class
 admin\CRUD\create\data_pembayaran$12.class
 admin\CRUD\data_pembayaran$10.class
-admin\CRUD\create\data_pembayaran$MonthComboBox.class
 admin\CRUD\create\data_kelas$10.class
 admin\CRUD\edit\data_kelas$10.class
 admin\CRUD\create\data_pembayaran$10.class
