@@ -10,6 +10,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -43,7 +47,7 @@ public class data_pembayaran extends javax.swing.JFrame {
          this.TampilData();
 
     }
-  public void TampilData() {
+    public void TampilData(){
     int no = 1; // Counter variable
     TableModel = new DefaultTableModel(); // Initialize table model
     // Add columns to the table model
@@ -56,42 +60,45 @@ public class data_pembayaran extends javax.swing.JFrame {
     TableModel.addColumn("SPP");
     TableModel.addColumn("Jumlah Bayar");
 
-    tabelAkun.setModel(TableModel); // Set the table model
-
+    tabelAkun1.setModel(TableModel); // Set the table model
+    
     try {
-        java.sql.Statement statement = c.createStatement();
-        sql = "SELECT dp.*, da.nama AS nama_akun, ds.nominal AS nominal_spp " + 
-              "FROM data_pembayaran dp " +
-              "JOIN data_akun da ON dp.id_akun_siswa = da.id_akun " +
-              "JOIN data_spp ds ON dp.id_spp = ds.id_spp"; 
-        java.sql.ResultSet res = statement.executeQuery(sql); // Execute query
+        sql = "SELECT * FROM data_pembayaran"; 
+        java.sql.ResultSet res = stmnt.executeQuery(sql); // Execute query
 
         while (res.next()) {
              //inside your while loop, after fetching the values from the result set
-            int nominal = res.getInt("nominal_spp");
-            String tahun = res.getString("tahun_dibayar");
-
+//            int nominal = res.getInt("nominal_spp");
+//            String tahun = res.getString("tahun_dibayar");
+//            String username = res.getString("nama_akun");
+//            
             // Combine nominal and tahun into one string
-            String combinedValue = tahun  + " | " + nominal +"";
+       //     String combinedValue = tahun  + " | " + nominal +"";
+               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+String tglBayarString = res.getString("tgl_bayar"); // Get the date as a string from the ResultSet
+Date tglBayarDate = dateFormat.parse(tglBayarString); // Convert the string to a Date
 
-            TableModel.addRow(new Object[]{
-                no++,
-                res.getString("username"),
-                res.getString("nisn"),
-                res.getString("tgl_bayar"),
-                res.getString("bulan_dibayar"),
-                res.getString("tahun_dibayar"),
-                combinedValue,
-                res.getInt("jumlah_bayar")
-            });
+TableModel.addRow(new Object[]{
+    res.getInt("id_pembayaran"),
+    res.getInt("id_akun"),
+    res.getString("nisn"),
+    dateFormat.format(tglBayarDate), // Format the date before adding it to the table model
+    res.getString("bulan_dibayar"),
+    res.getString("tahun_dibayar"),
+    res.getInt("id_spp"),
+    res.getInt("jumlah_bayar")
+});
         }
         
         // Close the result set
         res.close();
     } catch (SQLException e) {
-        System.out.println(e.getMessage()); // Print error message
-    }
+        System.out.println("Error executing SQL query: " + e.getMessage()); // Print error message
+    }    catch (ParseException ex) {
+             Logger.getLogger(data_pembayaran.class.getName()).log(Level.SEVERE, null, ex);
+         }
 }
+
 
 
 
@@ -229,24 +236,12 @@ public class data_pembayaran extends javax.swing.JFrame {
 
         tabelAkun1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "No", "Username", "Password", "Nama", "Level"
+                "No", "Akun Petugas", "NISN", "Tanggal Bayar", "Bulan Bayar", "Tahun Bayar", "SPP", "Jumlah Bayar"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         tabelAkun1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabelAkun1MouseClicked(evt);
@@ -367,46 +362,44 @@ public class data_pembayaran extends javax.swing.JFrame {
 
         if (selectedRowIndex != -1) {
             selectedRowData = new Object[]{
-                selectedId =  tabelAkun.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_kelas
-                tabelAkun.getValueAt(selectedRowIndex, 1), // Assuming column 1 is nama_kelas
-                tabelAkun.getValueAt(selectedRowIndex, 2), // Assuming column 2 is kompetensi keahlian
+                selectedId =  tabelAkun.getValueAt(selectedRowIndex, 0).toString(), 
+                tabelAkun.getValueAt(selectedRowIndex, 1), 
+                tabelAkun.getValueAt(selectedRowIndex, 2), 
+                tabelAkun.getValueAt(selectedRowIndex, 3), 
+                tabelAkun.getValueAt(selectedRowIndex, 4),
+                tabelAkun.getValueAt(selectedRowIndex, 5), 
+                tabelAkun.getValueAt(selectedRowIndex, 6),
+                tabelAkun.getValueAt(selectedRowIndex, 7), 
+                
             };
         }
     }//GEN-LAST:event_tabelAkunMouseClicked
 
     private void addDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDataActionPerformed
-        new admin.CRUD.create.data_kelas().setVisible(true);
+        new admin.CRUD.create.data_pembayaran().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addDataActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-
-        if (selectedRowData != null) {
-            int id_pembayaran = Integer.parseInt(selectedRowData[0].toString());
-            String id_akun = selectedRowData[1].toString();
-            String nisn = selectedRowData[2].toString();
-            String tgl_bayar = selectedRowData[3].toString();
-            String bulan_bayar = selectedRowData[4].toString();
-            String tahun_bayar = selectedRowData[5].toString();
-            String nominalTahun = selectedRowData[6].toString();
-            String jumlah_bayar = selectedRowData[7].toString();
-            // Pass the data to data_akunEdit
-            //admin.CRUD.edit.data_pembayaran editForm = new admin.CRUD.edit.data_pembayaran(id_pembayaran, id_akun, nisn,tgl_bayar,bulan_bayar,tahun_bayar,nominalTahun,jumlah_bayar);
-           // editForm.setVisible(true);
-            this.dispose();
-        }
+        admin.CRUD.edit.data_pembayaran editForm = new admin.CRUD.edit.data_pembayaran();
+    editForm.setVisible(true);
+    this.dispose();
+         
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void tabelAkun1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkun1MouseClicked
-        int selectedRowIndex = tabelAkun.getSelectedRow();
+        int selectedRowIndex = tabelAkun1.getSelectedRow();
 
         if (selectedRowIndex != -1) {
             selectedRowData = new Object[]{
-                selectedId =  tabelAkun.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_akun
-                tabelAkun.getValueAt(selectedRowIndex, 1), // Assuming column 1 is username
-                tabelAkun.getValueAt(selectedRowIndex, 2), // Assuming column 2 is password
-                tabelAkun.getValueAt(selectedRowIndex, 3), // Assuming column 3 is nama
-                tabelAkun.getValueAt(selectedRowIndex, 4)  // Assuming column 4 is level
+                selectedId =  tabelAkun1.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_akun
+                tabelAkun1.getValueAt(selectedRowIndex, 1), // Assuming column 1 is username
+                tabelAkun1.getValueAt(selectedRowIndex, 2), // Assuming column 2 is password
+                tabelAkun1.getValueAt(selectedRowIndex, 3), // Assuming column 3 is nama
+                tabelAkun1.getValueAt(selectedRowIndex, 4),
+                 tabelAkun1.getValueAt(selectedRowIndex, 5),
+                tabelAkun1.getValueAt(selectedRowIndex, 6),
+                tabelAkun1.getValueAt(selectedRowIndex, 7),// Assuming column 4 is level
             };
         }
     }//GEN-LAST:event_tabelAkun1MouseClicked
@@ -444,6 +437,7 @@ public class data_pembayaran extends javax.swing.JFrame {
                 String resetAutoIncrementQuery = "ALTER TABLE data_pembayaran AUTO_INCREMENT = " + (totalRecords + 1);
                 statement.executeUpdate(resetAutoIncrementQuery);
             }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -15,8 +15,14 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import com.toedter.calendar.JYearChooser;
 import com.toedter.calendar.JMonthChooser;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 /**
  *
  * @author Eren
@@ -40,6 +46,7 @@ public class data_pembayaran extends javax.swing.JFrame {
         this.petugasCombo();
         this.nisnCombo();
         this.sppCombo();
+        
     }
     
     private HashMap<String, Integer> usernameToIdAkunMap = new HashMap<>();
@@ -81,6 +88,43 @@ public class data_pembayaran extends javax.swing.JFrame {
         }
         
     }
+    
+// Modify the populateBulanBayarCombo() method
+private void populateBulanBayarCombo() {
+    String selectedNisn = (String) jNisnCombo.getSelectedItem();
+    String selectedYear = (String) tahunBayar.getSelectedItem();
+
+    try {
+        java.sql.Statement statement = c.createStatement();
+        String sql = "SELECT DISTINCT bulan_dibayar " +
+                     "FROM data_pembayaran " +
+                     "WHERE nisn = '" + selectedNisn + "' " +
+                     "AND tahun_dibayar = " + selectedYear;
+
+        java.sql.ResultSet res = statement.executeQuery(sql);
+
+        // Create a HashSet to store the months that have been paid
+        HashSet<String> paidMonths = new HashSet<>();
+        while (res.next()) {
+            String month = res.getString("bulan_dibayar");
+            paidMonths.add(month);
+        }
+
+        // Populate the bulanBayar combo box with the list of unpaid months
+        bulanBayar.removeAllItems(); // Clear existing items
+        String[] allMonths = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        ArrayList<String> allMonthsList = new ArrayList<>(Arrays.asList(allMonths));
+        Collections.sort(allMonthsList);
+        bulanBayar.setModel(new DefaultComboBoxModel<>(allMonthsList.toArray(new String[0])));
+
+        // Close the result set
+        res.close();
+
+    } catch (SQLException e) {
+        e.printStackTrace(); // Handle the exception properly
+    }
+}
+
     private HashMap<String, Integer> sppDisplayTextToIdMap = new HashMap<>();
 
     private void sppCombo(){
@@ -132,9 +176,9 @@ public class data_pembayaran extends javax.swing.JFrame {
         id_akun3 = new javax.swing.JLabel();
         id_akun4 = new javax.swing.JLabel();
         id_akun = new javax.swing.JLabel();
-        tahunBayar = new com.toedter.calendar.JYearChooser();
         submitButton = new javax.swing.JButton();
         bulanBayar = new javax.swing.JComboBox<>();
+        tahunBayar = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -227,10 +271,17 @@ public class data_pembayaran extends javax.swing.JFrame {
             }
         });
 
-        bulanBayar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}));
+        bulanBayar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Select Month"}));
         bulanBayar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bulanBayarActionPerformed(evt);
+            }
+        });
+
+        tahunBayar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Select Year","2023","2024"}));
+        tahunBayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tahunBayarActionPerformed(evt);
             }
         });
 
@@ -271,15 +322,16 @@ public class data_pembayaran extends javax.swing.JFrame {
                                 .addComponent(tanggalBayar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(id_akun3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(id_akun4)
+                            .addComponent(tahunBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(id_akun3)
                             .addComponent(bulanBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tahunBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(id_akun6)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jumlahBayar, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(submitButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
-                        .addGap(159, 159, 159))))
+                            .addComponent(jumlahBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(131, 131, 131))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -295,11 +347,17 @@ public class data_pembayaran extends javax.swing.JFrame {
                     .addComponent(bDashboard1)
                     .addComponent(bLogout))
                 .addGap(68, 68, 68)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(id_akun)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jIdakunCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jIdakunCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(id_akun4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tahunBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addComponent(id_akun1)
                         .addGap(6, 6, 6)
@@ -315,18 +373,13 @@ public class data_pembayaran extends javax.swing.JFrame {
                             .addComponent(jIdsppCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(submitButton)))
                     .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(22, 22, 22)
-                                .addComponent(bulanBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(3, 3, 3))
+                            .addComponent(bulanBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(id_akun3)
-                                .addGap(34, 34, 34)))
-                        .addComponent(id_akun4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tahunBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(31, 31, 31)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(id_akun6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jumlahBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -377,11 +430,49 @@ public class data_pembayaran extends javax.swing.JFrame {
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        String selectedUsername = (String) jIdakunCombo.getSelectedItem();
-        String selectedDisplayText = (String) jNisnCombo.getSelectedItem();
-        Date selectedDate = tanggalBayar.getDate();
-        int selectedYear = tahunBayar.getYear();
-       
+         String selectedUsername = (String) jIdakunCombo.getSelectedItem();
+    Integer id_akun = usernameToIdAkunMap.get(selectedUsername);
+
+    String selectedNisn = (String) jNisnCombo.getSelectedItem();
+    Date selectedDate = tanggalBayar.getDate();
+    String selectedSPP = (String) jIdsppCombo.getSelectedItem();
+    Integer id_spp = sppDisplayTextToIdMap.get(selectedSPP);
+
+    String tahunBayars = (String) tahunBayar.getSelectedItem();
+    String BulanBayar = (String) bulanBayar.getSelectedItem();
+    String HJumlahBayar = jumlahBayar.getText();
+
+    try {
+        Connection ce = connection.getConnection();
+        sql = "SELECT * FROM data_siswa WHERE nisn = '"+ selectedNisn +"'";
+        java.sql.ResultSet res = stmnt.executeQuery(sql);
+
+        if (res.next()) {
+            String id_akun_siswa = res.getString("id_akun");
+
+            // Prepare a SQL insert statement to add a new ticket entry
+            java.sql.PreparedStatement statement = ce.prepareStatement("INSERT INTO data_pembayaran(id_akun, nisn, tgl_bayar, bulan_dibayar,tahun_dibayar,id_spp,jumlah_bayar,id_akun_siswa) values(?,?,?,?,?,?,?,?)");
+            statement.setInt(1, id_akun);  // Set as an integer
+            statement.setString(2, selectedNisn);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = sdf.format(selectedDate);
+            statement.setString(3, formattedDate);
+            statement.setString(4, BulanBayar);
+            statement.setString(5, tahunBayars);
+            statement.setInt(6, id_spp);  // Set as an integer
+            statement.setString(7, HJumlahBayar);
+            statement.setString(8, id_akun_siswa);
+
+            statement.executeUpdate(); // Execute the SQL insert statement
+            new admin.CRUD.data_pembayaran().setVisible(true);
+            this.dispose();
+        } else {
+            System.out.println("No data found for nisn: " + selectedNisn);
+        }
+    } catch (SQLException e) { 
+        System.out.println(e.getMessage());
+    }
+      
 
     }//GEN-LAST:event_submitButtonActionPerformed
 
@@ -392,6 +483,10 @@ public class data_pembayaran extends javax.swing.JFrame {
     private void bulanBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulanBayarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bulanBayarActionPerformed
+
+    private void tahunBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tahunBayarActionPerformed
+        populateBulanBayarCombo();
+    }//GEN-LAST:event_tahunBayarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -451,7 +546,7 @@ public class data_pembayaran extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jNisnCombo;
     private javax.swing.JTextField jumlahBayar;
     private javax.swing.JButton submitButton;
-    private com.toedter.calendar.JYearChooser tahunBayar;
+    private javax.swing.JComboBox<String> tahunBayar;
     private com.toedter.calendar.JDateChooser tanggalBayar;
     // End of variables declaration//GEN-END:variables
 }
