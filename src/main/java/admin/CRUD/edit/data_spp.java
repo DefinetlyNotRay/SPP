@@ -7,6 +7,12 @@ import admin.CRUD.create.*;
 import admin.CRUD.*;
 import admin.dashboardCRUD;
 import admin.dashboard;
+import connection.connection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Eren
@@ -16,9 +22,28 @@ public class data_spp extends javax.swing.JFrame {
     /**
      * Creates new form data_spp
      */
-    public data_spp() {
+    private int id_spp;
+    private String tahun;
+    private String nominal;
+    Connection c;
+    Statement stmnt;
+    ResultSet rs;
+    String sql;
+    public data_spp(int id_spp,String tahun,String nominal) {
         initComponents();
-    }
+        c = connection.getConnection();
+         this.id_spp = id_spp;
+          this.tahun = tahun;
+           this.nominal = nominal;
+        try{
+           stmnt = c.createStatement(); 
+        }catch(SQLException e){
+            
+        }
+        eTahun.setText(tahun);
+        eNominal.setText(nominal);
+    };
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,6 +62,11 @@ public class data_spp extends javax.swing.JFrame {
         bPembayaran = new javax.swing.JButton();
         bDashboard1 = new javax.swing.JButton();
         bLogout = new javax.swing.JButton();
+        bSubmit = new javax.swing.JToggleButton();
+        jLabel1 = new javax.swing.JLabel();
+        eTahun = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        eNominal = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +127,17 @@ public class data_spp extends javax.swing.JFrame {
             }
         });
 
+        bSubmit.setText("Submit");
+        bSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSubmitActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Tahun");
+
+        jLabel2.setText("Nominal");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,6 +160,20 @@ public class data_spp extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(319, 319, 319)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(bSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(eTahun, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(53, 53, 53)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(eNominal, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addContainerGap(319, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,6 +189,21 @@ public class data_spp extends javax.swing.JFrame {
                     .addComponent(bAkun)
                     .addComponent(bPembayaran))
                 .addContainerGap(272, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(108, 108, 108)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(eTahun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(eNominal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGap(18, 18, 18)
+                    .addComponent(bSubmit)
+                    .addContainerGap(108, Short.MAX_VALUE)))
         );
 
         pack();
@@ -175,8 +245,30 @@ public class data_spp extends javax.swing.JFrame {
     }//GEN-LAST:event_bDashboard1ActionPerformed
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
-        // TODO add your handling code here:
+        new login.login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bLogoutActionPerformed
+
+    private void bSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubmitActionPerformed
+         int nominal = Integer.parseInt(eNominal.getText());
+    int tahun = Integer.parseInt(eTahun.getText());
+
+    try {
+        sql = "UPDATE `data_spp` SET nominal='" + nominal + "',tahun='" + tahun + "'WHERE id_spp = '"+id_spp+"'";
+        stmnt = c.createStatement();
+        int rowsUpdated = stmnt.executeUpdate(sql);
+        if (rowsUpdated > 0) {
+            JOptionPane.showMessageDialog(null, "SPP Updated successfully.");
+            new admin.CRUD.data_spp().setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "No records updated. Check id_spp value.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error updating SPP. Please try again.");
+    }
+    }//GEN-LAST:event_bSubmitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,7 +303,7 @@ public class data_spp extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new data_spp().setVisible(true);
+                new data_spp(0,"","").setVisible(true);
             }
         });
     }
@@ -225,5 +317,10 @@ public class data_spp extends javax.swing.JFrame {
     private javax.swing.JButton bPembayaran;
     private javax.swing.JButton bSPP;
     private javax.swing.JButton bSiswa;
+    private javax.swing.JToggleButton bSubmit;
+    private javax.swing.JTextField eNominal;
+    private javax.swing.JTextField eTahun;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

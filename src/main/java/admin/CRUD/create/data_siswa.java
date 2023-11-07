@@ -377,6 +377,10 @@ public class data_siswa extends javax.swing.JFrame {
        Integer id_spp = sppDisplayTextToIdMap.get(spp);
        String akun = (String) jComboAkun.getSelectedItem();
        Integer id_akun = akunDisplayTexyToIdMap.get(akun);
+        if (nisn.isEmpty() || nis.isEmpty() || nama.isEmpty() || kelas.isEmpty() || alamat.isEmpty() || no_telp.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+            return; // Exit the method without executing the SQL statement
+        }
                  sql = "INSERT INTO data_siswa VALUE('"+nisn+"','"+nis+"','"+nama+"','"+id_kelas+"','"+alamat+"','"+no_telp+"','"+id_spp+"','"+id_akun+"');";
 
        try{

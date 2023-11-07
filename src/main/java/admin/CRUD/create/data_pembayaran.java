@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Eren
@@ -91,7 +92,7 @@ public class data_pembayaran extends javax.swing.JFrame {
     
 // Modify the populateBulanBayarCombo() method
 private void populateBulanBayarCombo() {
-    String selectedNisn = (String) jNisnCombo.getSelectedItem();
+     String selectedNisn = (String) jNisnCombo.getSelectedItem();
     String selectedYear = (String) tahunBayar.getSelectedItem();
 
     try {
@@ -110,12 +111,17 @@ private void populateBulanBayarCombo() {
             paidMonths.add(month);
         }
 
-        // Populate the bulanBayar combo box with the list of unpaid months
+        // Populate the bulanBayar combo box with all months in order
         bulanBayar.removeAllItems(); // Clear existing items
         String[] allMonths = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "December"};
-        ArrayList<String> allMonthsList = new ArrayList<>(Arrays.asList(allMonths));
-        Collections.sort(allMonthsList);
-        bulanBayar.setModel(new DefaultComboBoxModel<>(allMonthsList.toArray(new String[0])));
+        bulanBayar.setModel(new DefaultComboBoxModel<>(allMonths));
+
+        // Remove paid months from the list
+        if (!paidMonths.isEmpty()) {
+            for (String paidMonth : paidMonths) {
+                bulanBayar.removeItem(paidMonth);
+            }
+        }
 
         // Close the result set
         res.close();
@@ -430,7 +436,7 @@ private void populateBulanBayarCombo() {
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-         String selectedUsername = (String) jIdakunCombo.getSelectedItem();
+          String selectedUsername = (String) jIdakunCombo.getSelectedItem();
     Integer id_akun = usernameToIdAkunMap.get(selectedUsername);
 
     String selectedNisn = (String) jNisnCombo.getSelectedItem();
@@ -440,36 +446,80 @@ private void populateBulanBayarCombo() {
 
     String tahunBayars = (String) tahunBayar.getSelectedItem();
     String BulanBayar = (String) bulanBayar.getSelectedItem();
-    int HJumlahBayar = Integer.parseInt(jumlahBayar.getText());
+    String HJumlahBayar = jumlahBayar.getText();
+    if (tahunBayars.isEmpty() || BulanBayar.isEmpty() || HJumlahBayar.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+        return; // Exit the method without executing the SQL statement
+    }
 
     try {
         Connection ce = connection.getConnection();
         sql = "SELECT * FROM data_siswa WHERE nisn = '"+ selectedNisn +"'";
         java.sql.ResultSet res = stmnt.executeQuery(sql);
-
-        if (res.next()) {
+        int JumlahBayar = Integer.parseInt(jumlahBayar.getText());
+       if (res.next()) {
             String id_akun_siswa = res.getString("id_akun");
+            int id_sppd = res.getInt("id_spp");
+            String sql2 = "SELECT * FROM data_spp WHERE id_spp = '"+ id_sppd +"'";
+            java.sql.ResultSet res2 = stmnt.executeQuery(sql2);
+             
+            if (res2.next()) {
+                int nominal = res2.getInt("nominal");
 
-            // Prepare a SQL insert statement to add a new ticket entry
-            java.sql.PreparedStatement statement = ce.prepareStatement("INSERT INTO data_pembayaran(id_akun, nisn, tgl_bayar, bulan_dibayar,tahun_dibayar,id_spp,jumlah_bayar,id_akun_siswa) values(?,?,?,?,?,?,?,?)");
-            statement.setInt(1, id_akun);  // Set as an integer
-            statement.setString(2, selectedNisn);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String formattedDate = sdf.format(selectedDate);
-            statement.setString(3, formattedDate);
-            statement.setString(4, BulanBayar);
-            statement.setString(5, tahunBayars);
-            statement.setInt(6, id_spp);  // Set as an integer
-            statement.setInt(7, HJumlahBayar);
-            statement.setString(8, id_akun_siswa);
+                int additionalPayments = JumlahBayar / nominal; // Calculate the number of additional payments
 
-            statement.executeUpdate(); // Execute the SQL insert statement
-            new admin.CRUD.data_pembayaran().setVisible(true);
-            this.dispose();
+                int currentMonth = Arrays.asList(new String[]{"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "December"}).indexOf(BulanBayar);
+                
+                // Prepare a SQL insert statement to add a new payment entry
+                java.sql.PreparedStatement statement = ce.prepareStatement("INSERT INTO data_pembayaran(id_akun, nisn, tgl_bayar, bulan_dibayar,tahun_dibayar,id_spp,jumlah_bayar,id_akun_siswa) values(?,?,?,?,?,?,?,?)");
+                if (JumlahBayar == nominal) {
+                    // If JumlahBayar is the same as nominal, insert it normally with the selected BulanBayar
+                    statement.setInt(1, id_akun);
+                    statement.setString(2, selectedNisn);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = sdf.format(selectedDate);
+                    statement.setString(3, formattedDate);
+                    statement.setString(4, BulanBayar);
+                    statement.setString(5, tahunBayars);
+                    statement.setInt(6, id_spp);
+                    statement.setInt(7, nominal);
+                    statement.setString(8, id_akun_siswa);
+
+                    statement.executeUpdate(); // Execute the SQL insert statement
+                     new admin.CRUD.data_pembayaran().setVisible(true);
+                this.dispose();
+                } else {
+                   for (int i = 0; i < additionalPayments; i++) {
+                    int nextMonth = (currentMonth + i) % 12;
+
+                    String nextBulanBayar = new String[]{"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "December"}[nextMonth];
+
+                    statement.setInt(1, id_akun);
+                    statement.setString(2, selectedNisn);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = sdf.format(selectedDate);
+                    statement.setString(3, formattedDate);
+                    statement.setString(4, nextBulanBayar);
+                    statement.setString(5, tahunBayars);
+                    statement.setInt(6, id_spp);
+                    statement.setInt(7, nominal); // Use nominal value for each additional payment
+                    statement.setString(8, id_akun_siswa);
+
+                    statement.executeUpdate(); // Execute the SQL insert statement
+
+                    BulanBayar = nextBulanBayar; // Update BulanBayar for the next iteration
+                }
+
+                new admin.CRUD.data_pembayaran().setVisible(true);
+                this.dispose();
+                }
+            } else {
+                System.out.println("No data found for id_spp: " + id_sppd);
+            }
         } else {
             System.out.println("No data found for nisn: " + selectedNisn);
         }
-    } catch (SQLException e) { 
+    } catch (SQLException e) {
         System.out.println(e.getMessage());
     }
       
@@ -477,7 +527,7 @@ private void populateBulanBayarCombo() {
     }//GEN-LAST:event_submitButtonActionPerformed
 
     private void jNisnComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNisnComboActionPerformed
-        // TODO add your handling code here:
+        populateBulanBayarCombo();
     }//GEN-LAST:event_jNisnComboActionPerformed
 
     private void bulanBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulanBayarActionPerformed

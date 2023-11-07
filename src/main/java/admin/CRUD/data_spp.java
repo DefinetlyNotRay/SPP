@@ -5,6 +5,15 @@
 package admin.CRUD;
 import admin.dashboardCRUD;
 import admin.dashboard;
+import connection.connection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Eren
@@ -14,10 +23,47 @@ public class data_spp extends javax.swing.JFrame {
     /**
      * Creates new form data_spp
      */
+     Statement stmnt;
+      String sql;
+      String sql2;
+      String sql3;
+      ResultSet rs;
+      Connection c;
+          private DefaultTableModel TableModel;
+       private Object[] selectedRowData;
     public data_spp() {
         initComponents();
+         c = connection.getConnection();
+         try {
+              stmnt = c.createStatement(); // Initialize the statement object
+              
+          } catch (SQLException ex) {
+              Logger.getLogger(admin.CRUD.create.data_akun.class.getName()).log(Level.SEVERE, null, ex);
+          }
+         this.TampilData();
     }
-
+    
+    private void TampilData(){
+        TableModel = new DefaultTableModel();
+        TableModel.addColumn("No");
+        TableModel.addColumn("Tahun");
+        TableModel.addColumn("Nominal");
+        tabelAkun.setModel(TableModel);
+        
+        try{
+            sql = "SELECT * FROM `data_spp`";
+            rs = stmnt.executeQuery(sql);
+            while(rs.next()){
+                TableModel.addRow(new Object[]{
+                rs.getString("id_spp"),
+                rs.getString("tahun"),
+                rs.getInt("nominal"),
+            });
+            }
+        }catch(SQLException e){
+            
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,6 +81,11 @@ public class data_spp extends javax.swing.JFrame {
         bPembayaran = new javax.swing.JButton();
         bDashboard1 = new javax.swing.JButton();
         bLogout = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelAkun = new javax.swing.JTable();
+        addData = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,6 +146,54 @@ public class data_spp extends javax.swing.JFrame {
             }
         });
 
+        editButton.setText("Edit");
+        editButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editButtonActionPerformed(evt);
+            }
+        });
+
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
+        tabelAkun.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "No", "Nama Kelas", "Kompetensi Keahlian"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabelAkun.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelAkunMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelAkun);
+
+        addData.setText("Add New Data");
+        addData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDataActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,19 +202,30 @@ public class data_spp extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(bSPP, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bSiswa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bKelas, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bAkun, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bPembayaran)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 226, Short.MAX_VALUE)
-                .addComponent(bCRUD, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bDashboard1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(editButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteButton))
+                            .addComponent(addData)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 860, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bSiswa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bKelas, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bAkun, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bPembayaran)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 226, Short.MAX_VALUE)
+                        .addComponent(bCRUD, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bDashboard1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -131,7 +241,15 @@ public class data_spp extends javax.swing.JFrame {
                     .addComponent(bCRUD)
                     .addComponent(bAkun)
                     .addComponent(bPembayaran))
-                .addContainerGap(272, Short.MAX_VALUE))
+                .addGap(49, 49, 49)
+                .addComponent(addData)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(editButton)
+                    .addComponent(deleteButton))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         pack();
@@ -173,8 +291,78 @@ public class data_spp extends javax.swing.JFrame {
     }//GEN-LAST:event_bDashboard1ActionPerformed
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
-        // TODO add your handling code here:
+        new login.login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bLogoutActionPerformed
+    private String selectedId;
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+
+        if (selectedRowData != null) {
+            int id_spp = Integer.parseInt(selectedRowData[0].toString());
+            String tahun = selectedRowData[1].toString();
+            String nominal = selectedRowData[2].toString();
+
+            // Pass the data to data_akunEdit
+            admin.CRUD.edit.data_spp editForm = new admin.CRUD.edit.data_spp(id_spp, tahun, nominal);
+            editForm.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_editButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        Connection conn = connection.getConnection();
+
+        int confirm = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin menghapus data tersebut?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (confirm == 0) {
+            try {
+                // Prepare a SQL delete statement to remove the selected ticket information
+                java.sql.PreparedStatement statement = conn.prepareStatement("delete from data_spp where id_spp ='" + selectedId + "'");
+                statement.executeUpdate(); // Execute the SQL delete statement
+                JOptionPane.showMessageDialog(null, "Data berhasil dihapus", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+                TampilData(); // Refresh the displayed data
+
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Data gagal di hapus" + e.getMessage(), "Pesan", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        String countQuery = "SELECT COUNT(id_spp) FROM data_spp;";
+
+        try {
+            Statement statement = conn.createStatement();
+
+            // Get the total count
+            ResultSet resultSet = statement.executeQuery(countQuery);
+            int totalRecords = 0;
+            if (resultSet.next()) {
+                totalRecords = resultSet.getInt(1);
+            }
+
+            // Reset the auto-increment value
+            if (totalRecords > 0) {
+                String resetAutoIncrementQuery = "ALTER TABLE data_spp AUTO_INCREMENT = " + (totalRecords + 1);
+                statement.executeUpdate(resetAutoIncrementQuery);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void tabelAkunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkunMouseClicked
+        int selectedRowIndex = tabelAkun.getSelectedRow();
+
+        if (selectedRowIndex != -1) {
+            selectedRowData = new Object[]{
+                selectedId =  tabelAkun.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_kelas
+                tabelAkun.getValueAt(selectedRowIndex, 1), // Assuming column 1 is nama_kelas
+                tabelAkun.getValueAt(selectedRowIndex, 2), // Assuming column 2 is kompetensi keahlian
+            };
+        }
+    }//GEN-LAST:event_tabelAkunMouseClicked
+
+    private void addDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDataActionPerformed
+        new admin.CRUD.create.data_kelas().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_addDataActionPerformed
 
     /**
      * @param args the command line arguments
@@ -212,6 +400,7 @@ public class data_spp extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addData;
     private javax.swing.JButton bAkun;
     private javax.swing.JButton bCRUD;
     private javax.swing.JButton bDashboard1;
@@ -220,5 +409,9 @@ public class data_spp extends javax.swing.JFrame {
     private javax.swing.JButton bPembayaran;
     private javax.swing.JButton bSPP;
     private javax.swing.JButton bSiswa;
+    private javax.swing.JButton deleteButton;
+    private javax.swing.JButton editButton;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tabelAkun;
     // End of variables declaration//GEN-END:variables
 }

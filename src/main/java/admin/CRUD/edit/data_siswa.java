@@ -39,7 +39,13 @@ public class data_siswa extends javax.swing.JFrame {
 
     public data_siswa(int num, String NISN,String nis,String nama,int id_kelas,String alamat,String no_telp,int spp,int akun_siswa) {
         initComponents(); // Initialize Swing components first
-
+        this.id_kelas = id_kelas;
+        this.NISN = NISN;
+        this.nis = nis;
+        this.alamat = alamat;
+        this.no_telp = no_telp;
+        this.spp = spp;
+        this.akun_siswa = akun_siswa;
     eNisn.setText(NISN);
     eNis.setText(nis);
     eNama.setText(nama);
@@ -48,6 +54,7 @@ public class data_siswa extends javax.swing.JFrame {
     jComboKelas.setSelectedItem(idkelasDisplayTextToIdMap.get(id_kelas));
     jComboSpp.setSelectedItem(idSppToDisplayTextMap.get(spp));
     jComboAkun.setSelectedItem(idakunDisplayTexyToIdMap.get(akun_siswa));
+    
 
     c = connection.getConnection();
     try {
@@ -390,6 +397,7 @@ public class data_siswa extends javax.swing.JFrame {
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
         new login.login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void bSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubmitActionPerformed
@@ -404,6 +412,10 @@ public class data_siswa extends javax.swing.JFrame {
         Integer id_spp = sppDisplayTextToIdMap.get(spp);
         String akun = (String) jComboAkun.getSelectedItem();
         Integer id_akun = akunDisplayTexyToIdMap.get(akun);
+        if (nisn.isEmpty() || nis.isEmpty() || nama.isEmpty() || kelas.isEmpty() || alamat.isEmpty() || no_telp.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+            return; // Exit the method without executing the SQL statement
+        }
 sql = "UPDATE data_siswa SET nisn ='"+nisn+"', nis='"+nis+"', nama='"+nama+"', id_kelas='"+id_kelas+"', alamat='"+alamat+"', no_telp='"+no_telp+"', id_spp='"+id_spp+"', id_akun='"+id_akun+"' WHERE nisn = '"+nisn+"';";
 
         try{

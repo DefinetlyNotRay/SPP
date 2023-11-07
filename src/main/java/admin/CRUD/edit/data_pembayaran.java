@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 /**
@@ -577,7 +578,10 @@ private void populateBulanBayarCombo() {
         String tahunBayars = (String) tahunBayar.getSelectedItem();
         String BulanBayar = (String) bulanBayar.getSelectedItem();
         String HJumlahBayar = jumlahBayar.getText();
-
+  if (tahunBayars.isEmpty() || BulanBayar.isEmpty() || HJumlahBayar.isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+    return; // Exit the method without executing the SQL statement
+}
         try {
             Connection ce = connection.getConnection();
             sql = "SELECT * FROM data_siswa WHERE nisn = '"+ selectedNisn +"'";
