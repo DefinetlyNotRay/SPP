@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 /**
@@ -31,7 +32,13 @@ import javax.swing.table.TableModel;
  * @author Eren
  */
 public class data_pembayaran extends javax.swing.JFrame {
-
+    private void initializeStatement() {
+    try {
+        stmnt = c.createStatement();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
     /**
      * Creates new form data_pembayaran
      */
@@ -40,6 +47,7 @@ public class data_pembayaran extends javax.swing.JFrame {
     Statement stmnt;
           private DefaultTableModel TableModel;
        private Object[] selectedRowData;
+      
     public data_pembayaran(){
         initComponents();
         c = connection.getConnection();
@@ -52,6 +60,8 @@ public class data_pembayaran extends javax.swing.JFrame {
         this.nisnCombo();
         this.sppCombo();
         this.TampilData();
+            initializeStatement();
+
     }
     
      public void TampilData(){
@@ -108,8 +118,10 @@ TableModel.addRow(new Object[]{
     
     
     private HashMap<String, Integer> usernameToIdAkunMap = new HashMap<>();
+private HashMap<Integer, String> idAkunToUsernameMap = new HashMap<>();
+private HashMap<Integer, String> idSppToDisplayTextMap = new HashMap<>();
 
-    private void petugasCombo(){
+   private void petugasCombo(){
     try{
         java.sql.Statement statement = c.createStatement();
         sql = "SELECT * FROM data_akun WHERE level IN ('admin','petugas')";
@@ -119,15 +131,27 @@ TableModel.addRow(new Object[]{
             String username = res.getString("username");
 
             jIdakunCombo.addItem(username);
-            
+
             // Store the mapping in the HashMap
             usernameToIdAkunMap.put(username, Integer.parseInt(akun));
+
+            // Store the reverse mapping
+            idAkunToUsernameMap.put(Integer.parseInt(akun), username);
         }
-        
+
     } catch(SQLException e){
         e.printStackTrace(); // Handle the exception properly
     }
 }
+    private void setSelectedItemById(JComboBox comboBox, HashMap<String, Integer> map, int id) {
+    for (String key : map.keySet()) {
+        if (map.get(key) == id) {
+            comboBox.setSelectedItem(key);
+            break;
+        }
+    }
+}
+
 
     private void nisnCombo(){
         try{
@@ -138,6 +162,7 @@ TableModel.addRow(new Object[]{
             String nisn = res.getString("nisn");
 
             jNisnCombo.addItem(nisn);
+
             
             
         }
@@ -186,7 +211,7 @@ private void populateBulanBayarCombo() {
     private HashMap<String, Integer> sppDisplayTextToIdMap = new HashMap<>();
 
     private void sppCombo(){
-        try{
+    try{
         java.sql.Statement statement = c.createStatement();
         sql = "SELECT * FROM data_spp";
         java.sql.ResultSet res = stmnt.executeQuery(sql);
@@ -200,11 +225,14 @@ private void populateBulanBayarCombo() {
 
             // Store the mapping in the HashMap
             sppDisplayTextToIdMap.put(displayText, id_spp);
+
+            // Store the reverse mapping
+            idSppToDisplayTextMap.put(id_spp, displayText);
         }
     } catch(SQLException e){
         e.printStackTrace(); // Handle the exception properly
     }
-    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -395,7 +423,7 @@ private void populateBulanBayarCombo() {
                         .addComponent(bAkun, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
                         .addComponent(bPembayaran)
-                        .addGap(218, 218, 218)
+                        .addGap(506, 506, 506)
                         .addComponent(bCRUD, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
                         .addComponent(bDashboard1)
@@ -525,11 +553,20 @@ private void populateBulanBayarCombo() {
     }//GEN-LAST:event_bDashboard1ActionPerformed
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
-        // TODO add your handling code here:
+        new login.login().setVisible(true);
+        this.dispose();
+
+
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
+                int selectedRowIndex = tabelAkun2.getSelectedRow();
+        
+           
+            selectedId =  tabelAkun2.getValueAt(selectedRowIndex, 0).toString();
+       
         String selectedUsername = (String) jIdakunCombo.getSelectedItem();
+       
         Integer id_akun = usernameToIdAkunMap.get(selectedUsername);
 
         String selectedNisn = (String) jNisnCombo.getSelectedItem();
@@ -550,7 +587,7 @@ private void populateBulanBayarCombo() {
                 String id_akun_siswa = res.getString("id_akun");
 
                 // Prepare a SQL insert statement to add a new ticket entry
-                java.sql.PreparedStatement statement = ce.prepareStatement("INSERT INTO data_pembayaran(id_akun, nisn, tgl_bayar, bulan_dibayar,tahun_dibayar,id_spp,jumlah_bayar,id_akun_siswa) values(?,?,?,?,?,?,?,?)");
+                java.sql.PreparedStatement statement = ce.prepareStatement("UPDATE data_pembayaran SET id_akun=?, nisn=?, tgl_bayar=?, bulan_dibayar=?,tahun_dibayar=?,id_spp=?,jumlah_bayar=?,id_akun_siswa=? WHERE id_pembayaran = '"+selectedId+"' ");
                 statement.setInt(1, id_akun);  // Set as an integer
                 statement.setString(2, selectedNisn);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -586,25 +623,53 @@ private void populateBulanBayarCombo() {
         populateBulanBayarCombo();
     }//GEN-LAST:event_tahunBayarActionPerformed
 private String selectedId;
+private int selectedAkun;
+private String nisn;
+private String tglBayarString;
+private String bulan_bayar;
+private String tahun_bayar;
+
+private int spp;
+private String jumlah_bayar;
+
+
     private void tabelAkun1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkun1MouseClicked
        
     }//GEN-LAST:event_tabelAkun1MouseClicked
 
     private void tabelAkun2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAkun2MouseClicked
-         int selectedRowIndex = tabelAkun2.getSelectedRow();
+          int selectedRowIndex = tabelAkun2.getSelectedRow();
 
-        if (selectedRowIndex != -1) {
-            selectedRowData = new Object[]{
-                selectedId =  tabelAkun2.getValueAt(selectedRowIndex, 0).toString(), // Assuming column 0 is id_akun
-                tabelAkun2.getValueAt(selectedRowIndex, 1), // Assuming column 1 is username
-                tabelAkun2.getValueAt(selectedRowIndex, 2), // Assuming column 2 is password
-                tabelAkun2.getValueAt(selectedRowIndex, 3), // Assuming column 3 is nama
-                tabelAkun2.getValueAt(selectedRowIndex, 4),
-                tabelAkun2.getValueAt(selectedRowIndex, 5),
-                tabelAkun2.getValueAt(selectedRowIndex, 6),
-                tabelAkun2.getValueAt(selectedRowIndex, 7),// Assuming column 4 is level
-            };
+    if (selectedRowIndex != -1) {
+        selectedRowData = new Object[]{
+            selectedId =  tabelAkun2.getValueAt(selectedRowIndex, 0).toString(),
+            selectedAkun= (int) tabelAkun2.getValueAt(selectedRowIndex, 1),
+            nisn = tabelAkun2.getValueAt(selectedRowIndex, 2).toString(),
+            tglBayarString = tabelAkun2.getValueAt(selectedRowIndex, 3).toString(),
+            bulan_bayar = tabelAkun2.getValueAt(selectedRowIndex, 4).toString(),
+            tahun_bayar = tabelAkun2.getValueAt(selectedRowIndex, 5).toString(),
+            spp= (int) tabelAkun2.getValueAt(selectedRowIndex, 6),
+            jumlah_bayar = tabelAkun2.getValueAt(selectedRowIndex, 7).toString(),
+        };
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date tglBayarDate = dateFormat.parse(tglBayarString);
+                    tanggalBayar.setDate(tglBayarDate);
+
+        } catch (ParseException ex) {
+            Logger.getLogger(data_pembayaran.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        // Set selected items in JComboBoxes based on id values
+        jIdakunCombo.setSelectedItem(idAkunToUsernameMap.get(selectedAkun));
+        jNisnCombo.setSelectedItem(nisn);
+        jIdsppCombo.setSelectedItem(idSppToDisplayTextMap.get(spp));
+        tahunBayar.setSelectedItem(tahun_bayar);
+        bulanBayar.setSelectedItem(bulan_bayar);
+        jumlahBayar.setText(jumlah_bayar);
+    }
+        
     }//GEN-LAST:event_tabelAkun2MouseClicked
 
     /**
@@ -641,6 +706,7 @@ private String selectedId;
         Date currentDate = new Date();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                
                 new data_pembayaran().setVisible(true);
             }
         });

@@ -112,7 +112,7 @@ private void populateBulanBayarCombo() {
 
         // Populate the bulanBayar combo box with the list of unpaid months
         bulanBayar.removeAllItems(); // Clear existing items
-        String[] allMonths = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        String[] allMonths = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "December"};
         ArrayList<String> allMonthsList = new ArrayList<>(Arrays.asList(allMonths));
         Collections.sort(allMonthsList);
         bulanBayar.setModel(new DefaultComboBoxModel<>(allMonthsList.toArray(new String[0])));
@@ -440,7 +440,7 @@ private void populateBulanBayarCombo() {
 
     String tahunBayars = (String) tahunBayar.getSelectedItem();
     String BulanBayar = (String) bulanBayar.getSelectedItem();
-    String HJumlahBayar = jumlahBayar.getText();
+    int HJumlahBayar = Integer.parseInt(jumlahBayar.getText());
 
     try {
         Connection ce = connection.getConnection();
@@ -460,7 +460,7 @@ private void populateBulanBayarCombo() {
             statement.setString(4, BulanBayar);
             statement.setString(5, tahunBayars);
             statement.setInt(6, id_spp);  // Set as an integer
-            statement.setString(7, HJumlahBayar);
+            statement.setInt(7, HJumlahBayar);
             statement.setString(8, id_akun_siswa);
 
             statement.executeUpdate(); // Execute the SQL insert statement
