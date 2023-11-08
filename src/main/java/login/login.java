@@ -20,6 +20,8 @@ public class login extends javax.swing.JFrame {
     Statement stmnt;
     String sql;
     ResultSet rs;
+        private int id_akun;
+
     /**
      * Creates new form login
      */
@@ -28,6 +30,10 @@ public class login extends javax.swing.JFrame {
                 connect = connection.getConnection();
 
     }
+    public int getIdAkun() {
+    return id_akun;
+}
+
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -86,6 +92,8 @@ public class login extends javax.swing.JFrame {
         stmnt = connect.createStatement();
         rs = stmnt.executeQuery(query);
          if (rs.next()) {
+                 id_akun = rs.getInt("id_akun"); // Set the id_akun
+
             // User authentication successful
             String userType = rs.getString("level"); 
              String userRole = "";
@@ -113,11 +121,14 @@ public class login extends javax.swing.JFrame {
                     break;
                 case "siswa":
                     role.verif.handleSiswa(); // Call method from role.verif package
-                    this.dispose();
+                    siswa.dashboardSiswa historyFrame = new siswa.dashboardSiswa(id_akun);
+                historyFrame.setVisible(true);
+                this.dispose();
                     break;
                 default:
                     break;
             }
+
         } else {
             // Invalid username or password
             JOptionPane.showMessageDialog(null, "Invalid username or password");

@@ -67,6 +67,11 @@ public class dashboard extends javax.swing.JFrame {
         });
 
         bLogout.setText("Log Out");
+        bLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bLogoutActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -111,12 +116,19 @@ public class dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_bCRUDActionPerformed
 
     private void bEntryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEntryActionPerformed
-        // TODO add your handling code here:
+        new EntryAdmin().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bEntryActionPerformed
 
     private void bHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bHistoryActionPerformed
-        // TODO add your handling code here:
+        new HistoryAdmin().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bHistoryActionPerformed
+
+    private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
+        new login.login().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_bLogoutActionPerformed
 
     /**
      * @param args the command line arguments

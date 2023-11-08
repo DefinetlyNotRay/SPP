@@ -13,8 +13,11 @@ public class dashboardSiswa extends javax.swing.JFrame {
     /**
      * Creates new form dashboard
      */
-    public dashboardSiswa() {
+    private int id_akun;
+    public dashboardSiswa(int id_akun) {
         initComponents();
+        this.id_akun = id_akun;
+
     }
 
     /**
@@ -33,6 +36,11 @@ public class dashboardSiswa extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButton4.setText("Lihat History");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Log Out");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -41,6 +49,7 @@ public class dashboardSiswa extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
         jButton1.setText("Dashboard");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -52,7 +61,7 @@ public class dashboardSiswa extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 348, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
                 .addComponent(jButton5)
                 .addContainerGap())
         );
@@ -71,9 +80,15 @@ public class dashboardSiswa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-       new login.login().setVisible(true);
+        new login.login().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        siswa.HistorySiswa historyFrame = new siswa.HistorySiswa(id_akun);
+        historyFrame.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -106,7 +121,7 @@ public class dashboardSiswa extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new dashboardSiswa().setVisible(true);
+                new dashboardSiswa(0).setVisible(true);
             }
         });
     }

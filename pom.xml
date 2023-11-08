@@ -11,17 +11,22 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <exec.mainClass>com.mycompany.spp.SPP</exec.mainClass>
     </properties>
-        <dependencies>
+    <dependencies>
     <!-- Other dependencies -->
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>8.0.23</version> <!-- Use the version compatible with your MySQL server -->
-    </dependency>
-                <dependency>
-                        <groupId>com.toedter</groupId>
-                        <artifactId>jcalendar</artifactId>
-                        <version>1.4</version>
-                </dependency>
-        </dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.23</version> <!-- Use the version compatible with your MySQL server -->
+        </dependency>
+        <dependency>
+                <groupId>com.toedter</groupId>
+                <artifactId>jcalendar</artifactId>
+                <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.3</version>
+        </dependency>
+     </dependencies>
 </project>

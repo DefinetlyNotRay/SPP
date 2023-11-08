@@ -197,6 +197,11 @@ public class data_siswa extends javax.swing.JFrame {
         jLabel4.setText("Kelas");
 
         jComboKelas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
+        jComboKelas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboKelasActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Alamat");
 
@@ -393,6 +398,10 @@ public class data_siswa extends javax.swing.JFrame {
 
        }
     }//GEN-LAST:event_bSubmitActionPerformed
+
+    private void jComboKelasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboKelasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboKelasActionPerformed
 
     /**
      * @param args the command line arguments

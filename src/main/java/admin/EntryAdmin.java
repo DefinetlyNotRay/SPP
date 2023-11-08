@@ -20,6 +20,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  *
@@ -382,11 +389,13 @@ private void populateBulanBayarCombo() {
     }//GEN-LAST:event_bEntryActionPerformed
 
     private void bHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bHistoryActionPerformed
-        // TODO add your handling code here:
+        new HistoryAdmin().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bHistoryActionPerformed
 
     private void bDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDashboardActionPerformed
-        // TODO add your handling code here:
+        new dashboard().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bDashboardActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
@@ -514,7 +523,27 @@ private void populateBulanBayarCombo() {
     }//GEN-LAST:event_jNisnComboActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
+        String Text2Print = kwitansiArea.getText();
+         String outputFileName = "kwitansi siswa.pdf";
+
+    Document document = new Document();
+
+    try {
+        PdfWriter.getInstance(document, new FileOutputStream(outputFileName));
+        document.open();
+
+        // Tambahkan teks dari JTextArea ke dokumen PDF
+        Paragraph paragraph = new Paragraph(Text2Print);
+        document.add(paragraph);
+
+        // Tutup dokumen
+        document.close();
+
+        JOptionPane.showMessageDialog(this, "File PDF berhasil dibuat: " + outputFileName);
+    } catch (DocumentException | IOException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     /**

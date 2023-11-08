@@ -14,8 +14,12 @@ import siswa.dashboardSiswa;
  *
  * @author Eren
  */
+ 
 public class verif {
-      public static void handleAdmin() {
+  
+ 
+    
+     public static void handleAdmin() {
        new dashboard().setVisible(true);
        
     }
@@ -25,6 +29,6 @@ public class verif {
     }
 
     public static void handleSiswa() {
-      new dashboardSiswa().setVisible(true);
+      new dashboardSiswa(0).setVisible(true);
     }
 }
