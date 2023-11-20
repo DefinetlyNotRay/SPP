@@ -51,10 +51,7 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="id_akun4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="id_akun4" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                               <Component id="submitButton" min="-2" pref="272" max="-2" attributes="0"/>
@@ -65,7 +62,7 @@
                           <Component id="id_akun3" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="bulanBayar" alignment="0" min="-2" pref="274" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+                      <EmptySpace min="47" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane1" min="-2" pref="382" max="-2" attributes="0"/>
                           <Component id="id_akun7" min="-2" max="-2" attributes="0"/>
@@ -172,6 +169,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Log Out"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bLogoutActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="bDashboard">
       <Properties>

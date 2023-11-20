@@ -207,6 +207,11 @@ private void populateBulanBayarCombo() {
         });
 
         bLogout.setText("Log Out");
+        bLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bLogoutActionPerformed(evt);
+            }
+        });
 
         bDashboard.setText("Dashboard");
         bDashboard.addActionListener(new java.awt.event.ActionListener() {
@@ -303,21 +308,16 @@ private void populateBulanBayarCombo() {
                                 .addComponent(tanggalBayar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(id_akun4)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(id_akun4)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(2, 2, 2)
-                                        .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(id_akun6)
-                                    .addComponent(jumlahBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tahunBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(id_akun3)
-                                    .addComponent(bulanBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(47, 47, 47)
+                                .addGap(2, 2, 2)
+                                .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(id_akun6)
+                            .addComponent(jumlahBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tahunBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(id_akun3)
+                            .addComponent(bulanBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(id_akun7)
@@ -545,6 +545,11 @@ private void populateBulanBayarCombo() {
         JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
     }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
+        new login.login().show();
+        this.dispose();
+    }//GEN-LAST:event_bLogoutActionPerformed
 
     /**
      * @param args the command line arguments

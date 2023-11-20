@@ -142,11 +142,13 @@ public class dashboardCRUD extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
-        // TODO add your handling code here:
+        new login.login().show();
+        this.dispose();
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void bDashboard1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDashboard1ActionPerformed
-        // TODO add your handling code here:
+        new dashboard().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_bDashboard1ActionPerformed
 
     private void bCRUDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCRUDActionPerformed

@@ -410,18 +410,19 @@ private void populateBulanBayarCombo() {
         JOptionPane.showMessageDialog(null, "Please fill in all fields.");
         return; // Exit the method without executing the SQL statement
     }
-    
 
     try {
         Connection ce = connection.getConnection();
         sql = "SELECT * FROM data_siswa WHERE nisn = '"+ selectedNisn +"'";
         java.sql.ResultSet res = stmnt.executeQuery(sql);
         int JumlahBayar = Integer.parseInt(jumlahBayar.getText());
+
        if (res.next()) {
             String id_akun_siswa = res.getString("id_akun");
             int id_sppd = res.getInt("id_spp");
             String sql2 = "SELECT * FROM data_spp WHERE id_spp = '"+ id_sppd +"'";
             java.sql.ResultSet res2 = stmnt.executeQuery(sql2);
+
              
             if (res2.next()) {
                 int nominal = res2.getInt("nominal");
@@ -429,7 +430,11 @@ private void populateBulanBayarCombo() {
                 int additionalPayments = JumlahBayar / nominal; 
 
                 int currentMonth = Arrays.asList(new String[]{"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "December"}).indexOf(BulanBayar);
-                
+                if(JumlahBayar < nominal){
+                    JOptionPane.showMessageDialog(null, "Incufficient Funds.");
+                    return;
+                }
+
                 // Prepare a SQL insert statement to add a new payment entry
                 java.sql.PreparedStatement statement = ce.prepareStatement("INSERT INTO data_pembayaran(id_akun, nisn, tgl_bayar, bulan_dibayar,tahun_dibayar,id_spp,jumlah_bayar,id_akun_siswa) values(?,?,?,?,?,?,?,?)");
                 if (JumlahBayar == nominal) {
